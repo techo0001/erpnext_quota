@@ -4,6 +4,7 @@ import subprocess
 from frappe import _
 
 # User
+@frappe.whitelist()
 def user_limit(self, method):
   # JSON file path
   json_file_path = frappe.get_site_path('quota.json')
@@ -56,7 +57,7 @@ def validate_users(self, count_administrator_user, count_website_users, allowed_
     is_desk = "Desk"
 
     for user in user_list:
-      roles = frappe.get_list("Has Role", { 'parent': user.name}, ['role'])
+      roles = frappe.get_list( "Has Role", {"parent": user.name}, ["role"], ignore_permissions=True)
       for row in roles:
         if frappe.get_value("Role", row.role, "desk_access") == 1: 
           active_users += 1
